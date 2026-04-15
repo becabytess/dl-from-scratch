@@ -7,7 +7,7 @@ A complete reverse-mode automatic differentiation engine and feedforward neural 
 - **Computation graph** — dynamic DAG of scalar `Value` nodes linked by arithmetic ops
 - **Reverse-mode autodiff** — backpropagation via topological sort and the chain rule
 - **Fully flexible feedforward network** — configurable depth and width (default: 50 → 32 → 16 → 8 → 1)
-- **MSE loss + SGD** — trains end-to-end on synthetic data
+- **Batch Gradient Descent** — trains end-to-end on synthetic data via MSE loss
 
 ## Build & run
 
