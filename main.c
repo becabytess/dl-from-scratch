@@ -468,24 +468,18 @@ for (int m=0; m < 10000; m ++){
 
 
     
-
-    // --- free matmul intermediate nodes (heap_mul + heap_add_l chains) ---
-    // each result cell res[r][c] is an add node (stored in the array, NOT individually
-    // heap-allocated) whose ->left is a heap_add_l and ->right is a heap_mul.
-    // heap_add_l itself may chain further (left -> prev heap_add_l, right -> prev heap_mul).
     for (int i = 1; i <= n_layers; i++) {
         for (int r = 0; r < outputs[i].nrows; r++) {
             for (int c = 0; c < outputs[i].ncols; c++) {
                 Value* cell = &outputs[i].data[r][c];
                 if (!cell->has_children) continue;
-                // walk the chain: cell is in the array (don't free it),
-                // but its left (heap_add_l) and right (heap_mul) are heap-allocated
+        
                 Value* mul_node = cell->right;
                 Value* add_node = cell->left;
                 free(mul_node);
                 while (add_node != NULL) {
                     if (!add_node->has_children) {
-                        // leaf copy of the zero-init value
+                      
                         free(add_node);
                         break;
                     }
@@ -499,10 +493,7 @@ for (int m=0; m < 10000; m ++){
         }
     }
 
-    // --- free MSE computation graph nodes ---
-    // mse builds a chain: new_loss -> (prev_loss, mulres -> (diff_l, diff_r))
-    // diff_l->right = neg_y_l, diff_r->right = neg_y_r  (all heap-allocated)
-    // the chain ends at &loss (stack variable), which we must NOT free
+
     {
         Value* cur = loss_ptr;
         while (cur != &loss) {
@@ -528,7 +519,7 @@ for (int m=0; m < 10000; m ++){
         free(transp_mats[i].data);
     }
 
-    // free matmul result matrices (outputs[1] through outputs[n_layers])
+
     for (int i = 1; i <= n_layers; i++) {
         for (int q = 0; q < outputs[i].nrows; q++) {
             free(outputs[i].data[q]);
@@ -536,7 +527,7 @@ for (int m=0; m < 10000; m ++){
         free(outputs[i].data);
     }
 
-    // reset topo capacity to avoid unbounded growth
+
     if (cap > initial_cap * 4) {
         cap = initial_cap;
         free(topo);
