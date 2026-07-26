@@ -1,6 +1,6 @@
 # Autograd Engine & Neural Network from Scratch in C
 
-A complete reverse-mode automatic differentiation engine and feedforward neural network built from scratch in pure C — no libraries, no frameworks.
+A complete reverse-mode automatic differentiation engine and feedforward neural network built from scratch in pure C . no libraries, no frameworks.
 
 ## Features
 
